@@ -5,11 +5,10 @@ pipeline {
 
         stage('checking directory') {
             steps {
-                   sh '''
-                   pwd
-                   ls -R
-                   '''
-                }
+                sh '''
+                pwd
+                ls -R
+                '''
             }
         }
 
@@ -31,5 +30,4 @@ pipeline {
 
     }
 }
-
-
+``
