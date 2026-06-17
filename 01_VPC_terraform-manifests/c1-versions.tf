@@ -6,14 +6,14 @@ terraform {
       version = ">= 6.0"
     }
   }
-# Remote Backend
+  # Remote Backend
   backend "s3" {
-    bucket         = "jenkins-prod-terraform-state-demo"
-    key            = "vpc/dev/terraform.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
+    bucket       = "jenkins-prod-terraform-state-demo"
+    key          = "vpc/dev/terraform.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
     use_lockfile = true
-  }   
+  }
 }
 
 provider "aws" {
