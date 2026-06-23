@@ -1,53 +1,53 @@
-provider "helm" {
-  kubernetes {
-    host                   = aws_eks_cluster.main.endpoint
-    cluster_ca_certificate = base64decode(
-      aws_eks_cluster.main.certificate_authority[0].data
-    )
 
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-
-      command = "aws"
-
-      args = [
-        "eks",
-        "get-token",
-        "--cluster-name",
-        aws_eks_cluster.main.name
-      ]
-
-      # OPTIONAL (recommended for cross-account / CI/CD roles)
-      # args = [
-      #   "eks", "get-token",
-      #   "--cluster-name", aws_eks_cluster.main.name,
-      #   "--role-arn", "arn:aws:iam::<account-id>:role/<role-name>"
-      # ]
-    }
-
-
-provider "kubernetes" {
-  host = aws_eks_cluster.main.endpoint
-
-  cluster_ca_certificate = base64decode(
+locals {
+  cluster_name = aws_eks_cluster.main.name
+  cluster_host = aws_eks_cluster.main.endpoint
+  cluster_ca   = base64decode(
     aws_eks_cluster.main.certificate_authority[0].data
   )
 
+  # Optional: for CI/CD or cross-account access
+  eks_role_arn = var.eks_access_role_arn
+}
+
+provider "kubernetes" {
+  host                   = local.cluster_host
+  cluster_ca_certificate = local.cluster_ca
+
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
 
-    command = "aws"
-
-    args = [
-      "eks",
-      "get-token",
-      "--cluster-name",
-      aws_eks_cluster.main.name
+    args = local.eks_role_arn != "" ? [
+      "eks", "get-token",
+      "--cluster-name", local.cluster_name,
+      "--role-arn", local.eks_role_arn
+    ] : [
+      "eks", "get-token",
+      "--cluster-name", local.cluster_name
     ]
-
-    # Optional role assumption (same as above if needed)
   }
 }
-``
+
+
+
+provider "helm" {
+  kubernetes {
+    host                   = local.cluster_host
+    cluster_ca_certificate = local.cluster_ca
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+
+      args = local.eks_role_arn != "" ? [
+        "eks", "get-token",
+        "--cluster-name", local.cluster_name,
+        "--role-arn", local.eks_role_arn
+      ] : [
+        "eks", "get-token",
+        "--cluster-name", local.cluster_name
+      ]
+    }
   }
 }
