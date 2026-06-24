@@ -21,7 +21,7 @@ pipeline {
                 dir("${TF_DIR}") {
                     sh '''
                     terraform init \
-                    -backend-config="jenkins-prod-terraform-state-demo" \
+                    -backend-config="bucket=jenkins-prod-terraform-state-demo" \
                     -backend-config="key=vpc/dev/terraform.tfstate" \
                     -backend-config="region=$AWS_REGION"
                     '''
