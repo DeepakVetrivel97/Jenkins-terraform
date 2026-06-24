@@ -1,4 +1,4 @@
-
+Jenkinsfile
 pipeline {
     agent any
 
@@ -8,12 +8,6 @@ pipeline {
     }
 
     stages {
-
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'YOUR_GITHUB_REPO'
-            }
-        }
 
         stage('Terraform Format Check') {
             steps {
