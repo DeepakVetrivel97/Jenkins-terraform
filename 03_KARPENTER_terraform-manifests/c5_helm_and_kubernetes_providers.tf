@@ -9,7 +9,7 @@ provider "kubernetes" {
   host                   = local.endpoint
   cluster_ca_certificate = local.ca_data
 
-  exec {
+  exec = {
     api_version = "client.authentication.k8s.io/v1beta1"
 
     command = "aws"
@@ -29,7 +29,7 @@ provider "helm" {
     host                   = local.endpoint
     cluster_ca_certificate = local.ca_data
 
-    exec {
+    exec = {
       api_version = "client.authentication.k8s.io/v1beta1"
 
       command = "aws"
