@@ -16,7 +16,7 @@ provider "kubernetes" {
 
   exec = {
     api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
+    command     = "/usr/local/bin/aws"
 
     args = local.eks_role_arn != "" ? [
       "eks", "get-token",
@@ -38,7 +38,7 @@ provider "helm" {
 
     exec = {
       api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
+      command     = "/usr/local/bin/aws"
 
       args = local.eks_role_arn != "" ? [
         "eks", "get-token",
