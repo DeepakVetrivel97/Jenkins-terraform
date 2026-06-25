@@ -5,7 +5,7 @@ pipeline {
     environment {
         AWS_REGION = 'us-east-1'
         TF_DIR = '01_VPC_terraform-manifests'
-        ENV = 'prod'   // change to prod later or pass as parameter
+        ENV = 'dev'   // change to prod later or pass as parameter
     }
 
     stages {
