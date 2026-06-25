@@ -89,6 +89,22 @@ pipeline {
             }
         }
 
+        stage('Configure Kubeconfig') {
+            steps {
+                withEnv([
+                    "AWS_REGION=${AWS_REGION}",
+                    "AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}"
+                ]) {
+                    sh """
+                    mkdir -p ~/.kube
+                    /usr/local/bin/aws eks update-kubeconfig \
+                      --region ${AWS_REGION} \
+                      --name retail-dev-eksdemo1
+                    """
+                }
+            }
+        }
+
         // ✅ Approval only for PROD
         stage('Approval') {
             when {
