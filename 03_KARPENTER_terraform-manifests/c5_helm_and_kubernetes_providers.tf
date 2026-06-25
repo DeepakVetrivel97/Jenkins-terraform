@@ -1,5 +1,5 @@
 locals {
-  cluster_name = data.terraform_remote_state.eks.outputs.eks_cluster_name
+  cluster_name = local.cluster_name
   endpoint     = data.terraform_remote_state.eks.outputs.eks_cluster_endpoint
   ca_data      = base64decode(data.terraform_remote_state.eks.outputs.eks_cluster_certificate_authority_data)
 }
