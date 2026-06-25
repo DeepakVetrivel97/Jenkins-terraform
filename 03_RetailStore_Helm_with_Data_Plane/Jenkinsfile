@@ -39,24 +39,25 @@ pipeline {
                 dir("${HELM_DIR}") {
                     sh '''
                     set -e
-
+                    
                     echo "🚀 Deploying all microservices..."
-
+                    
                     for dir in */; do
                         APP=$(basename $dir)
-
+                    
                         echo "✅ Deploying $APP..."
-
+                    
                         helm upgrade --install $APP $dir \
                             --namespace $NAMESPACE \
                             --create-namespace
-
+                    
                         echo "⏳ Waiting for $APP rollout..."
-                        kubectl rollout status deployment/$APP
-
+                    
+                        kubectl rollout status deployment -l app.kubernetes.io/instance=$APP
+                    
                         echo "✅ $APP deployed successfully"
                     done
-
+                    
                     echo "🎉 All services deployed!"
                     '''
                 }
