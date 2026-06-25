@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         AWS_REGION = 'us-east-1'
-        TF_DIR = '02_RetailStore_AWS_Dataplane/01_AWS_Data_Plane_terraform-manifests'
+        TF_DIR = '02_RetailStore_AWS_Dataplane'
         ENV = 'dev'   // change to prod later or pass as parameter
     }
 
