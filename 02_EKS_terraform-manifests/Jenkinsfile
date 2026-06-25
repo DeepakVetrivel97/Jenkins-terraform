@@ -13,6 +13,7 @@ pipeline {
         stage('Terraform Format Check') {
             steps {
                 dir("${TF_DIR}") {
+                    sh 'terraform fmt -recursive'
                     sh 'terraform fmt -check -recursive'
                 }
             }
