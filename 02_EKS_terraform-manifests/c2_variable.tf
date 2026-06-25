@@ -108,3 +108,9 @@ variable "node_disk_size" {
   type        = number
   default     = 20
 }
+
+
+variable "eks_access_role_arn" {
+  type = string
+}
+
