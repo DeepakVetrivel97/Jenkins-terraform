@@ -9,33 +9,6 @@ pipeline {
     }
 
     stages {
-
-        stage('Clean Workspace') {
-            steps {
-                deleteDir()
-            }
-        }
-
-                
-        stage('Checkout Full Repo') {
-            steps {
-                checkout scm
-            }
-        }
-
-
-        
-        stage('VERIFY REPO FROM ROOT') {
-            steps {
-                sh '''
-                echo "ROOT STRUCTURE:"
-                ls -R
-                '''
-            }
-        }
-
-
-        
        
         stage('Terraform Format Check') {
             steps {
@@ -52,7 +25,7 @@ pipeline {
                     sh """
                     terraform init -reconfigure \
                     -backend-config="bucket=jenkins-prod-terraform-state-demo" \
-                    -backend-config="key=\${ENV}/awsservices/terraform.tfstate" \
+                    -backend-config="key=\${ENV}/karpenter/terraform.tfstate" \
                     -backend-config="region=${AWS_REGION}"
                     """
                 }
