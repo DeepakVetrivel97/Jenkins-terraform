@@ -25,7 +25,7 @@ pipeline {
                     sh """
                     terraform init -reconfigure \
                     -backend-config="bucket=jenkins-prod-terraform-state-demo" \
-                    -backend-config="key=\${ENV}/vpc/terraform.tfstate" \
+                    -backend-config="key=\${ENV}/awsservices/terraform.tfstate" \
                     -backend-config="region=${AWS_REGION}"
                     """
                 }
