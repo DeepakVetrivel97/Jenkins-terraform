@@ -111,6 +111,8 @@ variable "node_disk_size" {
 
 
 variable "eks_access_role_arn" {
+  description = "iam access"
   type = string
+  default ="arn:aws:iam::948982764895:role/jenkins-terraform-role"
 }
 
