@@ -11,6 +11,17 @@ pipeline {
     stages {
 
         
+        stage('Clean Terraform Cache') {
+            steps {
+                dir("${TF_DIR}") {
+                    sh '''
+                    rm -rf .terraform
+                    rm -f .terraform.lock.hcl
+                    '''
+                }
+            }
+        }
+        
         stage('Clean Workspace') {
                     steps {
                         deleteDir()
