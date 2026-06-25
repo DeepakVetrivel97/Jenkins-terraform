@@ -17,6 +17,17 @@ pipeline {
         }
 
         
+        stage('VERIFY REPO FROM ROOT') {
+            steps {
+                sh '''
+                echo "ROOT STRUCTURE:"
+                ls -R
+                '''
+            }
+        }
+
+
+        
        
         stage('Terraform Format Check') {
             steps {
