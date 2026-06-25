@@ -1,16 +1,27 @@
-
 pipeline {
     agent any
 
     environment {
         AWS_REGION = 'us-east-1'
+        AWS_DEFAULT_REGION = 'us-east-1'
         TF_DIR = '02_EKS_terraform-manifests'
-        ENV = 'dev'   // change to prod later or pass as parameter
+        ENV = 'dev'   // change to 'prod' later or parameterize
     }
 
     stages {
 
-        
+        stage('Clean Workspace') {
+            steps {
+                deleteDir()
+            }
+        }
+
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Clean Terraform Cache') {
             steps {
                 dir("${TF_DIR}") {
@@ -21,19 +32,6 @@ pipeline {
                 }
             }
         }
-        
-        stage('Clean Workspace') {
-                    steps {
-                        deleteDir()
-                    }
-                }
-        
-        stage('Checkout Code') {
-                    steps {
-                        checkout scm
-                    }
-                }
-
 
         stage('Terraform Format Check') {
             steps {
@@ -47,12 +45,17 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 dir("${TF_DIR}") {
-                    sh """
-                    terraform init -reconfigure -upgrade \
-                    -backend-config="bucket=jenkins-prod-terraform-state-demo" \
-                    -backend-config="key=\${ENV}/eks/terraform.tfstate" \
-                    -backend-config="region=${AWS_REGION}"
-                    """
+                    withEnv([
+                        "AWS_REGION=${AWS_REGION}",
+                        "AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}"
+                    ]) {
+                        sh """
+                        terraform init -reconfigure -upgrade \
+                        -backend-config="bucket=jenkins-prod-terraform-state-demo" \
+                        -backend-config="key=${ENV}/eks/terraform.tfstate" \
+                        -backend-config="region=${AWS_REGION}"
+                        """
+                    }
                 }
             }
         }
@@ -76,12 +79,17 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 dir("${TF_DIR}") {
-                    sh 'terraform plan -out=tfplan'
+                    withEnv([
+                        "AWS_REGION=${AWS_REGION}",
+                        "AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}"
+                    ]) {
+                        sh 'terraform plan -out=tfplan'
+                    }
                 }
             }
         }
 
-        // ✅ ENTERPRISE APPROVAL CONTROL
+        // ✅ Approval only for PROD
         stage('Approval') {
             when {
                 expression {
@@ -98,7 +106,12 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir("${TF_DIR}") {
-                    sh 'terraform apply -auto-approve tfplan'
+                    withEnv([
+                        "AWS_REGION=${AWS_REGION}",
+                        "AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}"
+                    ]) {
+                        sh 'terraform apply -auto-approve tfplan'
+                    }
                 }
             }
         }
